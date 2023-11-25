@@ -1,0 +1,58 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+<title>API Interaction</title>
+</head>
+<body>
+<h1>API Interaction</h1>
+
+<form id="apiForm">
+<label for="itemInput">Item Name:</label>
+<input type="text" id="itemInput" required>
+<button type="button" id="addItemButton">Add Item</button>
+</form>
+
+<h2>Items:</h2>
+<ul id="itemList"></ul>
+<script>
+  
+    const apiForm = document.getElementById('apiForm');
+    const itemInput = document.getElementById('itemInput');
+    const addItemButton = document.getElementById('addItemButton');
+    const itemList = document.getElementById('itemList');
+    
+    function fetchItems() {
+    fetch('/api/items')
+    .then(response => response.json())
+    .then(data => {
+    itemList.innerHTML = data.map(item => <li>${item.name}</li>).join('');
+    });
+    }
+   
+    function addItem() {
+    const newItem = { name: itemInput.value };
+    fetch('/api/items', {
+    method: 'POST',
+    headers: {
+    'Content-Type': 'application/json',
+    body: JSON.stringify(newItem),}
+})
+.then(response => response.json())
+.then(() => {
+fetchItems();
+itemInput.value = '';
+});
+}
+
+apiForm.addEventListener('submit', (e) => {
+e.preventDefault();
+});
+addItemButton.addEventListener('click', () => {
+addItem();
+});
+
+fetchItems();
+</script>
+</body>
+</html>
